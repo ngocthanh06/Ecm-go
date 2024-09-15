@@ -1,0 +1,68 @@
+{{ define "adminLayout" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Nest Dashboard</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="" />
+    <meta property="og:type" content="" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/admin/imgs/theme/favicon.svg" />
+    <!-- Template CSS -->
+    <script src="/assets/base/js/vendor/color-modes.js"></script>
+    <link href="/assets/admin/css/main.css?v=6.0" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div class="screen-overlay"></div>
+{{ template "adminSidebar" . }}
+<main class="main-wrap">
+    {{ template "adminHeader" . }}
+
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Dashboard</h2>
+                <p>Whole data about your business here</p>
+            </div>
+            <div>
+                <a href="#" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Create report</a>
+            </div>
+        </div>
+
+        {{ block "adminContent" . }} {{ end }}
+
+    </section>
+    <!-- content-main end// -->
+    <footer class="main-footer font-xs">
+        <div class="row pb-30 pt-15">
+            <div class="col-sm-6">
+                <script>
+                    document.write(new Date().getFullYear());
+                </script>
+                &copy; Nest - HTML Ecommerce Template .
+            </div>
+            <div class="col-sm-6">
+                <div class="text-sm-end">All rights reserved</div>
+            </div>
+        </div>
+    </footer>
+</main>
+<script src="/assets/base/js/vendor/jquery-3.6.0.min.js"></script>
+<script src="/assets/base/js/vendor/bootstrap.bundle.min.js"></script>
+<script src="/assets/base/js/vendor/select2.min.js"></script>
+<script src="/assets/base/js/vendor/perfect-scrollbar.js"></script>
+<script src="/assets/base/js/vendor/jquery.fullscreen.min.js"></script>
+<script src="/assets/base/js/vendor/chart.js"></script>
+<!-- Main Script -->
+<script src="/assets/admin/js/main.js?v=6.0" type="text/javascript"></script>
+<script src="/assets/admin/js/custom-chart.js" type="text/javascript"></script>
+</body>
+</html>
+
+{{ end }}
