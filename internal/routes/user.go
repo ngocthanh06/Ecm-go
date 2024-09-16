@@ -12,6 +12,13 @@ func init() {
 }
 
 func UserRoutes(route *gin.Engine) {
+	// Page not found
+	route.GET("404", func(context *gin.Context) {
+		utils.TemplateRender(context, http.StatusOK, "userPageNotFound", gin.H{
+			"title": "User page not found",
+		})
+	})
+
 	// register.html
 	route.GET("/register", func(context *gin.Context) {
 		utils.TemplateRender(context, http.StatusOK, "userRegister", gin.H{
@@ -21,6 +28,14 @@ func UserRoutes(route *gin.Engine) {
 
 	route.POST("/register", func(context *gin.Context) {
 		controller.Register(context)
+	})
+
+	route.GET("/verify/:token", func(context *gin.Context) {
+		controller.VerifyUserInformation(context)
+	})
+
+	route.GET("/page-verify-account-register/:token", func(context *gin.Context) {
+		controller.ShowPageVerifyAccount(context)
 	})
 
 	// login.html

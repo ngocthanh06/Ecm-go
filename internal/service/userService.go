@@ -2,23 +2,27 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/ngocthanh06/ecommerce/internal/database"
 	model "github.com/ngocthanh06/ecommerce/internal/models"
+	"github.com/ngocthanh06/ecommerce/internal/repository"
 	validation "github.com/ngocthanh06/ecommerce/internal/validation/user"
 	"github.com/ngocthanh06/ecommerce/pkg/utils"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
+	"time"
 )
 
 type UserServiceInterface interface {
 	HomeList(ctx context.Context) ([]map[string]interface{}, error)
 	Register(params *validation.RegisterData)
+	VerifyUserInformation(token string) (*model.User, error)
 }
 
 type UserService struct {
-	repo *database.Database
+	userRepo *repository.UserRepository
 }
 
 type homeResponseType struct {
@@ -28,11 +32,11 @@ type homeResponseType struct {
 
 func NewUserService() *UserService {
 	return &UserService{
-		repo: database.GetDb(),
+		userRepo: repository.GetRepository().UserRepository,
 	}
 }
 
-func (dbStorage UserService) HomeList(ctx context.Context) (*homeResponseType, error) {
+func (userRepo UserService) HomeList(ctx context.Context) (*homeResponseType, error) {
 	categories := []*model.Category{}
 	// get categories
 	resultCategories, err := GetCategories(categories)
@@ -50,43 +54,62 @@ func (dbStorage UserService) HomeList(ctx context.Context) (*homeResponseType, e
 	return response, nil
 }
 
-func (dbStorage UserService) Register(params *validation.RegisterData) (*model.User, error) {
-	// handle logic
-	err := dbStorage.repo.Db.Table("users").
-		Where("email = ? AND phone = ?", params.Email, params.Phone).
-		First(&params).Error
+func (userRepo UserService) Register(user *model.User, token string) (*model.User, error) {
+	hashPass, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, err
-	}
-
-	// send data to redis
-
-	// create hash password
-	hashPass, err := bcrypt.GenerateFromPassword([]byte(params.Password), bcrypt.DefaultCost)
 	if err != nil {
 		fmt.Println("hash pass error")
 
 		return nil, err
 	}
+	user.Password = string(hashPass)
+	user.Role = utils.Roles["user"]
+	userJSON, err := json.Marshal(user)
 
-	params.Password = string(hashPass)
-
-	var user = &model.User{
-		FirstName: params.FirstName,
-		LastName:  params.LastName,
-		Email:     params.Email,
-		Password:  params.Password,
-		Phone:     params.Phone,
-		Role:      utils.Roles["user"],
+	if err != nil {
+		return nil, err
 	}
+
+	// set value in redis 30 minutes
+	err = database.GetRedisInstance().Set(database.CtxBg, "registration:"+token, userJSON, time.Minute*30).Err()
+
+	if err != nil {
+		fmt.Printf("registration fails: %v", err)
+	}
+
+	err = database.GetRedisInstance().Set(database.CtxBg, "registration:"+user.Email, user.Email, time.Minute*30).Err()
+
+	if err != nil {
+		fmt.Printf("registration fails: %v", err)
+	}
+
+	return user, nil
+
+}
+
+func (userRepo UserService) VerifyUserInformation(userRedis string) (*model.User, error) {
+	var user *model.User
+	err := json.Unmarshal([]byte(userRedis), &user)
+
+	if err != nil {
+		fmt.Println(err)
+
+		return nil, nil
+	}
+
+	// handle logic
+	err = userRepo.userRepo.FirstUser(user).Error
+
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err
+	}
+
 	// create
-	result := dbStorage.repo.Db.Table("users").Create(user)
+	err = userRepo.userRepo.CreateUser(user).Error
 
-	if result.Error != nil {
-		fmt.Println(user)
-
-		return nil, result.Error
+	//
+	if err != nil {
+		return nil, err
 	}
 
 	return user, nil

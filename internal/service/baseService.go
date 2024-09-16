@@ -5,13 +5,15 @@ type baseService struct {
 	CategoryService *CategoryService
 }
 
-var ServiceInstance *baseService
+var serviceInstance *baseService
 
-func InitService() *baseService {
-	ServiceInstance = &baseService{
+func InitService() {
+	serviceInstance = &baseService{
 		UserService:     NewUserService(),
 		CategoryService: NewCategoryService(),
 	}
+}
 
-	return ServiceInstance
+func GetServiceInstance() *baseService {
+	return serviceInstance
 }

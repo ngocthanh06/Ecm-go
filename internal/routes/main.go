@@ -3,6 +3,7 @@ package routes
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/ngocthanh06/ecommerce/internal/repository"
 	"github.com/ngocthanh06/ecommerce/internal/service"
 	"github.com/ngocthanh06/ecommerce/pkg/utils"
 	"log"
@@ -23,6 +24,9 @@ func MainRoutes() {
 
 	router.SetHTMLTemplate(templates)
 	router.Static("/assets", "./web/assets")
+
+	// repository
+	repository.InitBaseRepository()
 
 	// service
 	service.InitService()

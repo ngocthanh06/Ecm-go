@@ -35,6 +35,10 @@
             {{ template "userRegister" . }}
         {{ else if eq .templates "userLogin" }}
             {{ template "userLogin" . }}
+        {{ else if eq .templates "userPageNotFound" }}
+            {{ template "userPageNotFound" . }}
+        {{ else if eq .templates "pageVerifyAccountRegister" }}
+            {{ template "pageVerifyAccountRegister" . }}
 
         {{end}}
     {{ end }}

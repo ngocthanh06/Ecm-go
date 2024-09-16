@@ -2,10 +2,14 @@ package validation
 
 import (
 	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/ngocthanh06/ecommerce/internal/database"
+	model "github.com/ngocthanh06/ecommerce/internal/models"
+	"github.com/ngocthanh06/ecommerce/internal/repository"
 	"github.com/ngocthanh06/ecommerce/internal/validation"
+	"gorm.io/gorm"
+	"log"
 )
 
 type RegisterData struct {
@@ -21,20 +25,45 @@ type RegisterRequestInterface interface {
 	ValidationRequest(ctx *gin.Context) (*RegisterData, map[string]string)
 }
 
-func (params *RegisterData) ValidationRequest(ctx *gin.Context) (*RegisterData, map[string]string) {
-	if err := ctx.ShouldBind(&params); err != nil {
-		fmt.Println(err)
+func (params *RegisterData) ValidationRequest(ctx *gin.Context) (*model.User, map[string]string) {
+	if err := ctx.ShouldBind(params); err != nil {
+		log.Println(err)
 
-		return nil, params.MessagesError(err)
+		return &model.User{}, params.MessagesError(err)
+	}
+
+	var user = &model.User{
+		FirstName: params.FirstName,
+		LastName:  params.LastName,
+		Email:     params.Email,
+		Password:  params.Password,
+		Phone:     params.Phone,
+	}
+
+	// check user exist in IB
+	existUser := repository.GetRepository().UserRepository.FirstUser(user)
+
+	if existUser.Error == nil || (existUser.Error != nil && existUser.Error != gorm.ErrRecordNotFound) {
+		return user, map[string]string{
+			"Account Exists": "Email or phone is exist!",
+		}
+	}
+
+	// check account exist redis
+	result, _ := database.GetRedisInstance().Get(ctx, "registration:"+params.Email).Result()
+	if result != "" {
+		return user, map[string]string{
+			"AccountWaitVerify": "Email waiting verify please check email and accept link verify!",
+		}
 	}
 
 	if params.Password != params.ConfirmPassword {
-		return nil, map[string]string{
+		return user, map[string]string{
 			"ConfirmPassword": "Password not matching!",
 		}
 	}
 
-	return params, nil
+	return user, nil
 }
 
 func (params *RegisterData) MessagesError(err error) map[string]string {

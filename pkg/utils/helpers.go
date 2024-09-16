@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"html/template"
@@ -69,4 +71,18 @@ func ConvertFieldName(field string) string {
 	}
 
 	return strings.Join(result, "")
+}
+
+func CreateRandToken(size int) (string, error) {
+	bytes := make([]byte, size)
+
+	if _, err := rand.Read(bytes); err != nil {
+		fmt.Println("hash pass error")
+
+		return "", err
+	}
+
+	token := hex.EncodeToString(bytes)
+
+	return token, nil
 }

@@ -7,7 +7,7 @@ type User struct {
 	FirstName string     `json:"first_name" gorm:"column:first_name"`
 	LastName  string     `json:"last_name" gorm:"column:last_name"`
 	Email     string     `json:"email" gorm:"column:email;unique"`
-	Password  string     `json:"-" gorm:"column:password"`
+	Password  string     `json:"Password" gorm:"column:password"`
 	Phone     string     `json:"phone" gorm:"column:phone;unique"`
 	Role      int        `json:"role" gorm:"column:role"`
 	CreatedAt time.Time  `json:"created_at" gorm:"column:create_at"`
