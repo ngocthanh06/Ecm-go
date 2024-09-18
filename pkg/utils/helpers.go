@@ -15,7 +15,6 @@ import (
 )
 
 var ExtFile string
-var Route string
 
 func LoadTemplateDir(pattern string) (*template.Template, error) {
 	tmpl := template.New("")
@@ -50,14 +49,19 @@ func TemplateRender(context *gin.Context, httpStatus int, contentTemplate string
 	context.HTML(httpStatus, dirTmpl, data)
 }
 
-func renderHtmlTemplate(filePath string) template.HTML {
-	content, err := os.ReadFile(fmt.Sprintf("web/templates/%s/%s.%s", Route, filePath, ExtFile))
+func RenderHtmlTemplate(filePath string, dir string) template.HTML {
+
+	content, err := os.ReadFile(fmt.Sprintf("web/templates/%s/%s.%s", dir, filePath, ExtFile))
 
 	if err != nil {
 		log.Fatalf("Render template fails", err)
 	}
 
 	return template.HTML(string(content))
+}
+
+func RenderHtmlTemplateMail(filepath string) template.HTML {
+	return RenderHtmlTemplate(filepath, "mail")
 }
 
 func ConvertFieldName(field string) string {

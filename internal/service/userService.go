@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/ngocthanh06/ecommerce/internal/config"
 	"github.com/ngocthanh06/ecommerce/internal/database"
 	model "github.com/ngocthanh06/ecommerce/internal/models"
 	"github.com/ngocthanh06/ecommerce/internal/repository"
@@ -30,12 +31,26 @@ type homeResponseType struct {
 	Products   []*model.Product
 }
 
+// NewUserService
+//
+// Parameters:
+//
+// Returns:
+// - *UserService
 func NewUserService() *UserService {
 	return &UserService{
 		userRepo: repository.GetRepository().UserRepository,
 	}
 }
 
+// HomeList
+//
+// Parameters:
+// - ctx: *content.Context
+//
+// Returns:
+// - *homeResponseType
+// - error
 func (userRepo UserService) HomeList(ctx context.Context) (*homeResponseType, error) {
 	categories := []*model.Category{}
 	// get categories
@@ -54,6 +69,15 @@ func (userRepo UserService) HomeList(ctx context.Context) (*homeResponseType, er
 	return response, nil
 }
 
+// Register
+//
+// Parameters:
+// - user: *model.User
+// - token: string
+//
+// Returns:
+// - *model.User
+// - error
 func (userRepo UserService) Register(user *model.User, token string) (*model.User, error) {
 	hashPass, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 
@@ -83,10 +107,46 @@ func (userRepo UserService) Register(user *model.User, token string) (*model.Use
 		fmt.Printf("registration fails: %v", err)
 	}
 
-	return user, nil
+	// send Email register
+	sendEmailVerifyRegisterAccount(user.Email)
 
+	return user, nil
 }
 
+// SendEmailVerifyUserRegisterAccount
+//
+// Parameters:
+// - email: string
+// - name: string
+//
+// Returns:
+// - bool
+func sendEmailVerifyRegisterAccount(email string) bool {
+	emailList := config.SetEmailAddress([]string{email})
+
+	file := string(utils.RenderHtmlTemplateMail("user/verify-register-account"))
+
+	// test send mail
+	sendMail := config.SetMailContent(
+		emailList,
+		"You are awesome!",
+		file,
+		nil,
+		emailList,
+		emailList,
+	)
+
+	return sendMail.SendMailWithMailtrap()
+}
+
+// VerifyUserInformation
+//
+// Parameters:
+// - userRedis: string
+//
+// Returns:
+// - *model.User
+// - error
 func (userRepo UserService) VerifyUserInformation(userRedis string) (*model.User, error) {
 	var user *model.User
 	err := json.Unmarshal([]byte(userRedis), &user)

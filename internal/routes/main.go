@@ -13,6 +13,11 @@ func init() {
 	utils.ExtFile = "html"
 }
 
+// MainRoutes
+//
+// Parameters:
+//
+// Returns:
 func MainRoutes() {
 	router := gin.Default()
 

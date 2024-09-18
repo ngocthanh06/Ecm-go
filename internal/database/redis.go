@@ -15,6 +15,11 @@ type redisClient struct {
 
 var redisInstance *redisClient
 
+// InitRedisClient
+//
+// Parameters:
+//
+// Returns:
 func InitRedisClient() {
 	DB, _ := strconv.Atoi(os.Getenv("REDIS_DB"))
 
@@ -30,6 +35,12 @@ func InitRedisClient() {
 	//	RedisInstance.Rdb.Set(ctx, "key", "value", 0)
 }
 
+// GetRedisInstance
+//
+// Parameters:
+//
+// Returns:
+// - *redis.Client
 func GetRedisInstance() *redis.Client {
 	return &redisInstance.Rdb
 }

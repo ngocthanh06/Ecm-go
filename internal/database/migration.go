@@ -6,6 +6,12 @@ import (
 	"log"
 )
 
+// AutoMigration
+//
+// Parameters:
+// db: *gorm.DB
+//
+// Returns:
 func AutoMigration(db *gorm.DB) {
 	var modelTables = []interface{}{
 		&model.User{},

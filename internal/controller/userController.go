@@ -11,6 +11,10 @@ import (
 	"net/http"
 )
 
+// Home
+//
+// Parameters:
+// - context: *gin.Context
 func Home(context *gin.Context) {
 	response, err := service.GetServiceInstance().UserService.HomeList(context)
 
@@ -27,6 +31,10 @@ func Home(context *gin.Context) {
 	return
 }
 
+// Register
+//
+// Parameters:
+// - ctx: *gin.Context
 func Register(ctx *gin.Context) {
 	var validate validation.RegisterData
 	user, errors := validate.ValidationRequest(ctx)
@@ -60,6 +68,10 @@ func Register(ctx *gin.Context) {
 	return
 }
 
+// VerifyUserInformation
+//
+// Parameters:
+// - ctx: *gin.Context
 func VerifyUserInformation(ctx *gin.Context) {
 	token := ctx.Param("token")
 
@@ -90,6 +102,10 @@ func VerifyUserInformation(ctx *gin.Context) {
 	return
 }
 
+// ShowPageVerifyAccount
+//
+// Parameters:
+// - ctx: *gin.Context
 func ShowPageVerifyAccount(ctx *gin.Context) {
 	token := ctx.Param("token")
 

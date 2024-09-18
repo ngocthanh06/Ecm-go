@@ -1,0 +1,76 @@
+{{ define "verifyRegisterAccount" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Template</title>
+    <style>
+        /* CSS bên trong <style> sẽ không được nhiều client email hỗ trợ */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+        }
+        .header img {
+            max-width: 100%;
+            height: auto;
+        }
+        .content {
+            font-size: 16px;
+            color: #333333;
+            line-height: 1.6;
+        }
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            font-size: 14px;
+            color: #888888;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px 0;
+            font-size: 16px;
+            color: #ffffff;
+            background-color: #007bff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <img src="https://via.placeholder.com/600x200" alt="Header Image">
+    </div>
+    <div class="content">
+        <h1>Chào bạn!</h1>
+        <p>Chúng tôi rất vui được thông báo rằng bạn đã thành công trong việc đăng ký.</p>
+        <p>Để xác nhận tài khoản của bạn, vui lòng nhấp vào liên kết bên dưới:</p>
+        <a href="{{ .verifyRegisterAccountURL }}" class="button">Xác nhận tài khoản</a>
+        <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!</p>
+    </div>
+    <div class="footer">
+        <p>&copy; 2024 Công ty của chúng tôi. Địa chỉ: 1234 Đường Ví Dụ, Thành phố, Quốc gia.</p>
+    </div>
+</div>
+</body>
+</html>

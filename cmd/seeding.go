@@ -23,10 +23,20 @@ var (
 	}
 )
 
+// init
+//
+// Parameters:
+//
+// Returns:
 func init() {
 	rootCmd.AddCommand(seedingCmd)
 }
 
+// Seeding database
+//
+// Parameters:
+//
+// Returns:
 func seedingDatabase() {
 	// insert data in database
 	users := usersSeeding()
@@ -39,6 +49,12 @@ func seedingDatabase() {
 	}
 }
 
+// address Seeding
+//
+// Parameters:
+// - userNumber: int
+//
+// Returns:
 func addressSeeding(userNumber int) {
 	address := []*model.Address{}
 	// create address user
@@ -55,6 +71,12 @@ func addressSeeding(userNumber int) {
 	database.GetDb().Db.Create(&address)
 }
 
+// user Seeding
+//
+// Parameters:
+//
+// Returns:
+// - []*model.Category
 func usersSeeding() []*model.User {
 	hash, _ := bcrypt.GenerateFromPassword([]byte("password"), bcrypt.DefaultCost)
 
@@ -97,6 +119,12 @@ func usersSeeding() []*model.User {
 	return users
 }
 
+// Categories Seeding
+//
+// Parameters:
+//
+// Returns:
+// - []*model.Category
 func categoriesSeeding() []*model.Category {
 	categories := []*model.Category{
 		{
@@ -122,6 +150,11 @@ func categoriesSeeding() []*model.Category {
 	return categories
 }
 
+// Product tags Seeding
+//
+// Parameters:
+//
+// Returns:
 func productTagsSeeding() {
 	productTags := []*model.ProductTag{
 		{
@@ -149,6 +182,13 @@ func productTagsSeeding() {
 	}
 }
 
+// Product Seeding
+//
+// Parameters:
+// - userId: int
+// - categoryId: int
+//
+// Returns:
 func productSeeding(userId int, categoryId int) {
 	products := []*model.Product{}
 

@@ -6,10 +6,6 @@ import (
 	"net/http"
 )
 
-func init() {
-	utils.Route = "admin"
-}
-
 func AdminRoutes(router *gin.Engine) {
 	routeAdmin := router.Group("/admin")
 	{

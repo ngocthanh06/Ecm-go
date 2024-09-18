@@ -25,6 +25,14 @@ type RegisterRequestInterface interface {
 	ValidationRequest(ctx *gin.Context) (*RegisterData, map[string]string)
 }
 
+// ValidationRequest
+//
+// Parameters:
+// - ctx: *gin.Context
+//
+// Returns:
+// - *model.User
+// - map[string]string
 func (params *RegisterData) ValidationRequest(ctx *gin.Context) (*model.User, map[string]string) {
 	if err := ctx.ShouldBind(params); err != nil {
 		log.Println(err)
@@ -66,6 +74,13 @@ func (params *RegisterData) ValidationRequest(ctx *gin.Context) (*model.User, ma
 	return user, nil
 }
 
+// MessagesError
+//
+// Parameters:
+// - err: error
+//
+// Returns:
+// - map[string]string
 func (params *RegisterData) MessagesError(err error) map[string]string {
 	errorsMessage := make(map[string]string)
 

@@ -25,16 +25,34 @@ type Database struct {
 var databaseInstance *Database
 var once sync.Once
 
+// setDatabase
+//
+// Parameters:
+// - db: *gorm.DB
+//
+// Returns:
 func setDatabase(db *gorm.DB) {
 	databaseInstance = &Database{
 		Db: db,
 	}
 }
 
+// GetDb
+//
+// Parameters:
+//
+// Returns:
+// - *Database
 func GetDb() *Database {
 	return databaseInstance
 }
 
+// newEnvDbConfig
+//
+// Parameters:
+//
+// Returns:
+// - *envDbConfig
 func newEnvDbConfig() *envDbConfig {
 	return &envDbConfig{
 		host:     os.Getenv("DB_HOST"),
@@ -45,6 +63,13 @@ func newEnvDbConfig() *envDbConfig {
 	}
 }
 
+// getDnsDatabaseSqlite
+//
+// Parameters:
+// - config: *envDbConfig
+//
+// Returns:
+// - string
 func getDnsDatabaseSqlite(config *envDbConfig) string {
 	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai",
 		config.host,
@@ -55,6 +80,11 @@ func getDnsDatabaseSqlite(config *envDbConfig) string {
 	)
 }
 
+// ConnectionDatabase
+//
+// Parameters:
+//
+// Returns:
 func ConnectionDatabase() {
 	once.Do(func() {
 		dbConfig := newEnvDbConfig()
